@@ -38,12 +38,12 @@ jobs:
       # Step 5: Install dependencies and build the project
       - name: Install dependencies and build the project
         run: |
-          ./gradlew clean
-          ./gradlew build
+          ./gradlew clean --info  # This will provide more detailed log output
+          ./gradlew build --info
 
       # Step 6: Build APK file (Release)
       - name: Build APK (Release)
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleRelease --info
 
       # Step 7: Upload APK to GitHub Release
       - name: Upload APK to GitHub Release
