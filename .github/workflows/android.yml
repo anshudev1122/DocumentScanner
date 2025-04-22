@@ -22,7 +22,7 @@ jobs:
 
       # Step 3: Set up Android SDK
       - name: Set up Android SDK
-        uses: react-native-community/setup-android@v2
+        uses: android-actions/setup-android@v2
         with:
           sdk-version: '30.0.3'
 
@@ -37,14 +37,13 @@ jobs:
         run: |
           ./gradlew assembleRelease
 
-      # Step 6: Upload APK to GitHub Releases
+      # Step 6: Upload APK to GitHub Release
       - name: Upload APK to GitHub Release
-        uses: gh-action-upload-release@v1
+        uses: softprops/action-gh-release@v1
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          file: app/build/outputs/apk/release/app-release.apk
-          release-name: Release v${{ github.run_number }}
-          tag-name: v${{ github.run_number }}
+          files: app/build/outputs/apk/release/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
   serve:
     runs-on: ubuntu-latest
@@ -58,7 +57,7 @@ jobs:
           echo "Latest version: $latest_version"
           echo "Release date: $release_date"
         
-      # Step 8: Generate JSON response (API-like response)
+      # Step 8: Generate JSON response
       - name: Generate JSON response
         run: |
           echo "{\"version\": \"$latest_version\", \"release_date\": \"$release_date\"}" > latest_release.json
