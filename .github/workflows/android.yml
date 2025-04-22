@@ -69,7 +69,7 @@ jobs:
         run: |
           echo "{\"version\": \"$latest_version\", \"release_date\": \"$release_date\"}" > latest_release.json
 
-      # Step 10: Upload generated JSON file as artifact
+      # Step 10: Upload generated JSON file as artifact 
       - name: Upload release metadata
         uses: actions/upload-artifact@v2
         with:
