@@ -19,6 +19,14 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '11'
+          distribution: 'adoptopenjdk'  # Specify the JDK distribution
+          architecture: x64
+          check-latest: false
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+          overwrite-settings: true
+          job-status: success
 
       # Step 3: Set up Android SDK
       - name: Set up Android SDK
@@ -26,16 +34,15 @@ jobs:
         with:
           sdk-version: '30.0.3'
 
-      # Step 4: Install dependencies
-      - name: Install dependencies
+      # Step 4: Install dependencies and build the project
+      - name: Install dependencies and build the project
         run: |
           ./gradlew clean
           ./gradlew build
 
-      # Step 5: Build APK file
-      - name: Build APK
-        run: |
-          ./gradlew assembleRelease
+      # Step 5: Build APK file (Release)
+      - name: Build APK (Release)
+        run: ./gradlew assembleRelease
 
       # Step 6: Upload APK to GitHub Release
       - name: Upload APK to GitHub Release
@@ -44,7 +51,7 @@ jobs:
           files: app/build/outputs/apk/release/app-release.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
   serve:
     runs-on: ubuntu-latest
     steps:
