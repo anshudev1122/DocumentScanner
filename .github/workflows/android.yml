@@ -8,17 +8,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       # Step 1: Check out the code
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Step 2: Set up JDK 17 (Android SDK needs Java 17 for compatibility)
+      # Step 2: Set up JDK 17 (required for the Android SDK)
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
-          java-version: '17'  # Set to JDK 17 to resolve compatibility issue
+          java-version: '17'  # Use JDK 17 for compatibility with Android SDK tools
           distribution: 'temurin'
           architecture: x64
           check-latest: false
@@ -26,15 +26,10 @@ jobs:
           server-username: GITHUB_ACTOR
           server-password: GITHUB_TOKEN
           overwrite-settings: true
-          job-status: success
 
-      # Step 3: Set up Android SDK (make sure you remove sdk-version to avoid the warning)
+      # Step 3: Set up Android SDK (make sure sdk-version input is removed)
       - name: Set up Android SDK
         uses: android-actions/setup-android@v2
-        with:
-          # No 'sdk-version' input here
-          # You can define it in the build.gradle if needed
-          # sdk-tools-version: 'latest'
 
       # Step 4: Install dependencies and build the project
       - name: Install dependencies and build the project
@@ -56,6 +51,7 @@ jobs:
 
   serve:
     runs-on: ubuntu-latest
+
     steps:
       # Step 7: Get latest release version and date
       - name: Fetch latest release details
@@ -65,13 +61,13 @@ jobs:
           release_date=$(echo $latest_release | jq -r '.published_at')
           echo "Latest version: $latest_version"
           echo "Release date: $release_date"
-        
-      # Step 8: Generate JSON response
+
+      # Step 8: Generate JSON response with version and release date
       - name: Generate JSON response
         run: |
           echo "{\"version\": \"$latest_version\", \"release_date\": \"$release_date\"}" > latest_release.json
 
-      # Step 9: Upload generated JSON file to GitHub
+      # Step 9: Upload generated JSON file to GitHub as an artifact
       - name: Upload release metadata
         uses: actions/upload-artifact@v2
         with:
