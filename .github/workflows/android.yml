@@ -31,17 +31,21 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v2
 
-      # Step 4: Install dependencies and build the project
+      # Step 4: Ensure gradlew has execute permissions
+      - name: Set execute permissions for gradlew
+        run: chmod +x ./gradlew
+
+      # Step 5: Install dependencies and build the project
       - name: Install dependencies and build the project
         run: |
           ./gradlew clean
           ./gradlew build
 
-      # Step 5: Build APK file (Release)
+      # Step 6: Build APK file (Release)
       - name: Build APK (Release)
         run: ./gradlew assembleRelease
 
-      # Step 6: Upload APK to GitHub Release
+      # Step 7: Upload APK to GitHub Release
       - name: Upload APK to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -53,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 7: Get latest release version and date
+      # Step 8: Get latest release version and date
       - name: Fetch latest release details
         run: |
           latest_release=$(curl -s "https://api.github.com/repos/${{ github.repository }}/releases/latest")
@@ -62,12 +66,12 @@ jobs:
           echo "Latest version: $latest_version"
           echo "Release date: $release_date"
 
-      # Step 8: Generate JSON response with version and release date
+      # Step 9: Generate JSON response with version and release date
       - name: Generate JSON response
         run: |
           echo "{\"version\": \"$latest_version\", \"release_date\": \"$release_date\"}" > latest_release.json
 
-      # Step 9: Upload generated JSON file to GitHub as an artifact
+      # Step 10: Upload generated JSON file to GitHub as an artifact
       - name: Upload release metadata
         uses: actions/upload-artifact@v2
         with:
